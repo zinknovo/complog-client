@@ -2,8 +2,10 @@
   <div class="art-card h-128 p-5 mb-5 max-sm:mb-4">
     <div class="art-card-header">
       <div class="title">
-        <h4>代办事项</h4>
-        <p>待处理<span class="text-danger">3</span></p>
+        <h4>待办事项</h4>
+        <p
+          >待审核的制度<span class="text-danger">{{ pendingCount }}</span></p
+        >
       </div>
     </div>
 
@@ -15,10 +17,16 @@
           :key="index"
         >
           <div>
-            <p class="text-sm">{{ item.username }}</p>
+            <p class="text-sm">{{ item.title }}</p>
             <p class="text-g-500 mt-1">{{ item.date }}</p>
           </div>
           <ElCheckbox v-model="item.complate" />
+        </div>
+        <div
+          v-if="list.length === 0"
+          class="flex items-center justify-center h-full text-gray-400 text-sm"
+        >
+          暂无待办事项
         </div>
       </ElScrollbar>
     </div>
@@ -26,46 +34,34 @@
 </template>
 
 <script setup lang="ts">
+  import { fetchGetPolicyList } from '@/api/policy'
+
   interface TodoItem {
-    username: string
+    title: string
     date: string
     complate: boolean
   }
 
+  const list = ref<TodoItem[]>([])
+  const pendingCount = computed(() => list.value.filter((item) => !item.complate).length)
+
   /**
    * 待办事项列表
-   * 记录每日工作任务及完成状态
+   * 记录待审核的制度
    */
-  const list = reactive<TodoItem[]>([
-    {
-      username: '查看今天工作内容',
-      date: '上午 09:30',
-      complate: true
-    },
-    {
-      username: '回复邮件',
-      date: '上午 10:30',
-      complate: true
-    },
-    {
-      username: '工作汇报整理',
-      date: '上午 11:00',
-      complate: true
-    },
-    {
-      username: '产品需求会议',
-      date: '下午 02:00',
-      complate: false
-    },
-    {
-      username: '整理会议内容',
-      date: '下午 03:30',
-      complate: false
-    },
-    {
-      username: '明天工作计划',
-      date: '下午 06:30',
-      complate: false
+  onMounted(async () => {
+    try {
+      // 获取草稿状态的制度（待审核）
+      const res = await fetchGetPolicyList({ current: 1, size: 10, status: 0 })
+      if (res.records && res.records.length > 0) {
+        list.value = res.records.slice(0, 5).map((policy) => ({
+          title: policy.name,
+          date: policy.createdAt || '',
+          complate: false
+        }))
+      }
+    } catch (error) {
+      console.error('加载待办事项失败:', error)
     }
-  ])
+  })
 </script>

@@ -102,3 +102,10 @@ If you feel this project has reduced your development costs and solved problems 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Daymychen/art-design-pro&type=Date)](https://www.star-history.com/#Daymychen/art-design-pro&Date)
+
+## License Notice
+
+This project is based on `art-design-pro` (MIT License).
+
+- The original copyright and license text are retained in `LICENSE`.
+- MIT License allows commercial use with proper attribution.

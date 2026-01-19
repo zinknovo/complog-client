@@ -131,5 +131,106 @@ declare namespace Api {
       Pick<RoleListItem, 'roleId' | 'roleName' | 'roleCode' | 'description' | 'enabled'> &
         Api.Common.CommonSearchParams
     >
+
+    /** 部门列表 */
+    type DeptList = Api.Common.PaginatedResponse<DeptListItem>
+
+    /** 部门列表项 */
+    interface DeptListItem {
+      id: number
+      name: string
+      parentId?: number
+    }
+
+    /** 部门添加参数 */
+    interface DeptAddParams {
+      name: string
+      parentId?: number
+    }
+
+    /** 用户添加参数 */
+    interface UserAddParams {
+      name: string
+      phone: string
+      email?: string
+      deptId: number
+      role?: string
+      status?: number
+    }
+  }
+
+  /** 制度管理类型 */
+  namespace Policy {
+    /** 制度列表 */
+    type PolicyList = Api.Common.PaginatedResponse<PolicyListItem>
+
+    /** 制度列表项 */
+    interface PolicyListItem {
+      id: number
+      name: string
+      code: string
+      type: number
+      typeText: string
+      currentVersion: string
+      status: number
+      statusText: string
+      ownerDeptId: number
+      ownerDeptName: string
+      effectiveDate: string
+      expiryDate?: string
+      creator: string
+      createdAt: string
+      updatedAt: string
+    }
+
+    /** 制度搜索参数 */
+    interface PolicySearchParams extends Api.Common.CommonSearchParams {
+      name?: string
+      type?: number
+      status?: number
+    }
+
+    /** 制度添加参数 */
+    interface PolicyAddParams {
+      name: string
+      code: string
+      type: number
+      contentSummary?: string
+      contentFilePath?: string
+      effectiveDate?: string
+      expiryDate?: string
+      ownerDeptId?: number
+      status?: number
+    }
+
+    /** 制度编辑参数 */
+    interface PolicyEditParams {
+      id?: number
+      name?: string
+      code?: string
+      type?: number
+      contentSummary?: string
+      contentFilePath?: string
+      effectiveDate?: string
+      expiryDate?: string
+      ownerDeptId?: number
+      status?: number
+    }
+
+    /** 制度详情 */
+    interface PolicyDetail extends PolicyListItem {
+      contentSummary?: string
+      contentFilePath?: string
+    }
+
+    /** 制度版本历史 */
+    interface PolicyVersionHistory {
+      id: number
+      version: string
+      status: number
+      statusText: string
+      createdAt: string
+      creator: string
+    }
   }
 }

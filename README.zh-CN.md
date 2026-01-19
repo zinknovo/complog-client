@@ -102,3 +102,10 @@ QQ群：<a href="https://qm.qq.com/cgi-bin/qm/qr?k=Gg6yzZLFaNgmRhK0T5Qcjf7-XcAFW
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Daymychen/art-design-pro&type=Date)](https://www.star-history.com/#Daymychen/art-design-pro&Date)
+
+## 许可证声明
+
+本项目基于 `art-design-pro`（MIT License）。
+
+- 已保留原作者版权与许可证文本，见 `LICENSE`
+- MIT 许可证允许商用，但需保留版权与许可证声明

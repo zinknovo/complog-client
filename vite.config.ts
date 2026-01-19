@@ -27,7 +27,27 @@ export default ({ mode }: { mode: string }) => {
     server: {
       port: Number(VITE_PORT),
       proxy: {
+        // 认证服务（auth-service 在 8081）
+        '/api/auth': {
+          target: 'http://localhost:8081',
+          changeOrigin: true
+        },
+        // 制度服务（policy-service 在 8082）
+        '/policies': {
+          target: 'http://localhost:8082',
+          changeOrigin: true
+        },
+        // 基础服务（base-service 在 8080）
         '/api': {
+          target: VITE_API_PROXY_URL,
+          changeOrigin: true
+        },
+        // 代理后端接口（没有 /api 前缀的）
+        '/users': {
+          target: VITE_API_PROXY_URL,
+          changeOrigin: true
+        },
+        '/departments': {
           target: VITE_API_PROXY_URL,
           changeOrigin: true
         }

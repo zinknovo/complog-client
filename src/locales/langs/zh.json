@@ -140,7 +140,7 @@
       "user": "普通用户"
     },
     "placeholder": {
-      "username": "请输入账号",
+      "username": "请输入手机号",
       "password": "请输入密码",
       "slider": "请拖动滑块完成验证"
     },
@@ -290,17 +290,12 @@
     "system": {
       "title": "系统管理",
       "user": "用户管理",
-      "role": "角色管理",
-      "userCenter": "个人中心",
-      "menu": "菜单管理",
-      "nested": "嵌套菜单",
-      "menu1": "菜单1",
-      "menu2": "菜单2",
-      "menu21": "菜单2-1",
-      "menu3": "菜单3",
-      "menu31": "菜单3-1",
-      "menu32": "菜单3-2",
-      "menu321": "菜单3-2-1"
+      "department": "部门管理",
+      "userCenter": "个人中心"
+    },
+    "policy": {
+      "title": "制度管理",
+      "list": "制度列表"
     },
     "safeguard": {
       "title": "运维管理",

@@ -24,6 +24,10 @@
 </template>
 
 <script setup lang="ts">
+  import { fetchGetUserList } from '@/api/system-manage'
+  import { fetchGetDeptList } from '@/api/system-manage'
+  import { fetchGetPolicyList } from '@/api/policy'
+
   interface CardDataItem {
     des: string
     icon: string
@@ -35,40 +39,83 @@
 
   /**
    * 卡片统计数据列表
-   * 展示总访问次数、在线访客数、点击量和新用户等核心数据指标
+   * 展示用户总数、部门总数、制度总数、生效制度数等核心数据指标
    */
   const dataList = reactive<CardDataItem[]>([
     {
-      des: '总访问次数',
-      icon: 'ri:pie-chart-line',
+      des: '用户总数',
+      icon: 'ri:user-line',
       startVal: 0,
       duration: 1000,
-      num: 9120,
-      change: '+20%'
+      num: 0,
+      change: '-'
     },
     {
-      des: '在线访客数',
-      icon: 'ri:group-line',
+      des: '部门总数',
+      icon: 'ri:team-line',
       startVal: 0,
       duration: 1000,
-      num: 182,
-      change: '+10%'
+      num: 0,
+      change: '-'
     },
     {
-      des: '点击量',
-      icon: 'ri:fire-line',
+      des: '制度总数',
+      icon: 'ri:file-text-line',
       startVal: 0,
       duration: 1000,
-      num: 9520,
-      change: '-12%'
+      num: 0,
+      change: '-'
     },
     {
-      des: '新用户',
-      icon: 'ri:progress-2-line',
+      des: '生效制度',
+      icon: 'ri:check-line',
       startVal: 0,
       duration: 1000,
-      num: 156,
-      change: '+30%'
+      num: 0,
+      change: '-'
     }
   ])
+
+  // 加载统计数据
+  onMounted(async () => {
+    try {
+      // 获取用户总数
+      try {
+        const userRes = await fetchGetUserList({ current: 1, size: 1 })
+        dataList[0].num = userRes.total || 0
+      } catch (error) {
+        console.error('加载用户统计失败:', error)
+        // 如果服务未启动，保持默认值（0）
+      }
+
+      // 获取部门总数
+      try {
+        const deptRes = await fetchGetDeptList({ current: 1, size: 1 })
+        dataList[1].num = deptRes.total || 0
+      } catch (error) {
+        console.error('加载部门统计失败:', error)
+        // 如果服务未启动，保持默认值（0）
+      }
+
+      // 获取制度总数
+      try {
+        const policyRes = await fetchGetPolicyList({ current: 1, size: 1 })
+        dataList[2].num = policyRes.total || 0
+      } catch (error) {
+        console.error('加载制度统计失败:', error)
+        // 如果服务未启动，保持默认值（0）
+      }
+
+      // 获取生效制度数（status = 1）
+      try {
+        const activePolicyRes = await fetchGetPolicyList({ current: 1, size: 1, status: 1 })
+        dataList[3].num = activePolicyRes.total || 0
+      } catch (error) {
+        console.error('加载生效制度统计失败:', error)
+        // 如果服务未启动，保持默认值（0）
+      }
+    } catch (error) {
+      console.error('加载统计数据失败:', error)
+    }
+  })
 </script>

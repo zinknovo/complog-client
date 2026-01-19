@@ -43,7 +43,9 @@ const { VITE_API_URL, VITE_WITH_CREDENTIALS } = import.meta.env
 /** Axios实例 */
 const axiosInstance = axios.create({
   timeout: REQUEST_TIMEOUT,
-  baseURL: VITE_API_URL,
+  // 开发环境下 baseURL 为空，使用相对路径走 Vite 代理
+  // 生产环境下设置为实际的 API 地址
+  baseURL: VITE_API_URL || '',
   withCredentials: VITE_WITH_CREDENTIALS === 'true',
   validateStatus: (status) => status >= 200 && status < 300,
   transformResponse: [
@@ -82,11 +84,19 @@ axiosInstance.interceptors.request.use(
 
 /** 响应拦截器 */
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse<BaseResponse>) => {
-    const { code, msg } = response.data
+  (
+    response: AxiosResponse<
+      BaseResponse | { code: number; message?: string; msg?: string; data?: any }
+    >
+  ) => {
+    // 兼容后端两种响应格式：{ code, msg } 和 { code, message }
+    const responseData = response.data as any
+    const code = responseData.code
+    const msg = responseData.msg || responseData.message || $t('httpMsg.requestFailed')
+
     if (code === ApiStatus.success) return response
     if (code === ApiStatus.unauthorized) handleUnauthorizedError(msg)
-    throw createHttpError(msg || $t('httpMsg.requestFailed'), code)
+    throw createHttpError(msg, code)
   },
   (error) => {
     if (error.response?.status === ApiStatus.unauthorized) handleUnauthorizedError()
@@ -175,14 +185,17 @@ async function request<T = any>(config: ExtendedAxiosRequestConfig): Promise<T> 
   }
 
   try {
-    const res = await axiosInstance.request<BaseResponse<T>>(config)
+    const res = await axiosInstance.request<
+      BaseResponse<T> | { code: number; message?: string; msg?: string; data?: T }
+    >(config)
+    const responseData = res.data as any
 
-    // 显示成功消息
-    if (config.showSuccessMessage && res.data.msg) {
-      showSuccess(res.data.msg)
+    // 显示成功消息（兼容 msg 和 message）
+    if (config.showSuccessMessage && (responseData.msg || responseData.message)) {
+      showSuccess(responseData.msg || responseData.message)
     }
 
-    return res.data.data as T
+    return responseData.data as T
   } catch (error) {
     if (error instanceof HttpError && error.code !== ApiStatus.unauthorized) {
       const showMsg = config.showErrorMessage !== false
