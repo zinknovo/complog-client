@@ -74,5 +74,6 @@ npm run dev
 
 本项目基于 `art-design-pro`（MIT License）。
 
+- 原作者：Daymychen（art-design-pro）。
 - 已保留原作者版权与许可证文本，见 `LICENSE`
 - MIT 许可证允许商用，但需保留版权与许可证声明

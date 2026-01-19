@@ -74,5 +74,6 @@ Default demo accounts (phone + password):
 
 This project is based on `art-design-pro` (MIT License).
 
+- Original author: Daymychen (art-design-pro).
 - The original copyright and license text are retained in `LICENSE`.
 - MIT License allows commercial use with proper attribution.
