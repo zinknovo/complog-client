@@ -17,10 +17,12 @@ pnpm install
 
 ### 2. 配置环境变量
 
-已创建 `.env.development` 文件，配置了本地后端地址：
+已创建 `.env.development` 文件，开发环境通过 Vite 代理访问后端：
 
 ```
-VITE_API_URL=http://localhost:8080
+VITE_API_URL=
+VITE_API_PROXY_URL=http://localhost:8080
+VITE_PORT=5173
 ```
 
 ### 3. 启动后端服务
@@ -28,8 +30,9 @@ VITE_API_URL=http://localhost:8080
 确保后端服务正在运行：
 
 ```bash
-# base-service 运行在 localhost:8080
-# auth-service 运行在 localhost:8081（如果需要）
+# base-service 运行在 http://localhost:8080
+# auth-service 运行在 http://localhost:8081
+# policy-service 运行在 http://localhost:8082
 ```
 
 ### 4. 启动前端
@@ -77,8 +80,9 @@ pnpm dev
 **开发环境** (`.env.development`)：
 
 ```env
-VITE_API_URL=http://localhost:8080
+VITE_API_URL=
 VITE_API_PROXY_URL=http://localhost:8080
+VITE_PORT=5173
 ```
 
 **生产环境** (`.env.production`)：
@@ -94,10 +98,10 @@ VITE_API_URL=https://your-api-id.execute-api.region.amazonaws.com/prod
 ```typescript
 // vite.config.ts 已配置代理
 proxy: {
-  '/api': {
-    target: VITE_API_PROXY_URL,
-    changeOrigin: true
-  }
+  '/api/auth': { target: 'http://localhost:8081', changeOrigin: true },
+  '/users': { target: VITE_API_PROXY_URL, changeOrigin: true },
+  '/departments': { target: VITE_API_PROXY_URL, changeOrigin: true },
+  '/policies': { target: 'http://localhost:8082', changeOrigin: true }
 }
 ```
 
