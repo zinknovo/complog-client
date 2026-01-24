@@ -1,23 +1,25 @@
-# Complog Client 本地开发指南
+# Complog Client Local Development Guide
 
-## 🎯 项目说明
+English | [简体中文](./README_LOCAL_SETUP.zh-CN.md)
 
-这是 Complog 项目的前端部分，基于 art-design-pro 模板，已适配后端接口。
+## 🎯 Overview
+
+This is the frontend of the Complog project, based on the `art-design-pro` template and adapted to the backend APIs.
 
 ---
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 1. 安装依赖
+### 1. Install dependencies
 
 ```bash
 cd complog-client
 pnpm install
 ```
 
-### 2. 配置环境变量
+### 2. Configure environment variables
 
-已创建 `.env.development` 文件，开发环境通过 Vite 代理访问后端：
+The `.env.development` file is created, and Vite proxy is used in development:
 
 ```
 VITE_API_URL=
@@ -25,59 +27,59 @@ VITE_API_PROXY_URL=http://localhost:8080
 VITE_PORT=5173
 ```
 
-### 3. 启动后端服务
+### 3. Start backend services
 
-确保后端服务正在运行：
+Make sure backend services are running:
 
 ```bash
-# base-service 运行在 http://localhost:8080
-# auth-service 运行在 http://localhost:8081
-# policy-service 运行在 http://localhost:8082
+# base-service at http://localhost:8080
+# auth-service at http://localhost:8081
+# policy-service at http://localhost:8082
 ```
 
-### 4. 启动前端
+### 4. Start frontend
 
 ```bash
 pnpm dev
 ```
 
-前端会运行在 `http://localhost:5173`
+The frontend runs at `http://localhost:5173`.
 
 ---
 
-## 📋 API 接口映射
+## 📋 API Mapping
 
-### 已适配的接口
+### Integrated endpoints
 
-| 前端调用               | 后端接口               | 状态      |
-| ---------------------- | ---------------------- | --------- |
-| `GET /users`           | `GET /users`           | ✅ 已适配 |
-| `POST /users`          | `POST /users`          | ✅ 已适配 |
-| `GET /departments`     | `GET /departments`     | ✅ 已适配 |
-| `POST /departments`    | `POST /departments`    | ✅ 已适配 |
-| `POST /api/auth/login` | `POST /api/auth/login` | ✅ 已适配 |
+| Frontend Call          | Backend Endpoint       | Status   |
+| ---------------------- | ---------------------- | -------- |
+| `GET /users`           | `GET /users`           | ✅ Ready |
+| `POST /users`          | `POST /users`          | ✅ Ready |
+| `GET /departments`     | `GET /departments`     | ✅ Ready |
+| `POST /departments`    | `POST /departments`    | ✅ Ready |
+| `POST /api/auth/login` | `POST /api/auth/login` | ✅ Ready |
 
-### 字段映射
+### Field mapping
 
-**用户列表字段转换**：
+**User list mapping**:
 
-- 后端：`{ id, name, phone, deptId, deptName, role, status }`
-- 前端：`{ id, userName, userPhone, userEmail, status, ... }`
-- 转换逻辑在 `src/utils/api-adapter.ts`
+- Backend: `{ id, name, phone, deptId, deptName, role, status }`
+- Frontend: `{ id, userName, userPhone, userEmail, status, ... }`
+- Mapping in `src/utils/api-adapter.ts`
 
-**分页格式转换**：
+**Pagination mapping**:
 
-- 后端：`{ count, pageNo, pageSize, lists }`
-- 前端：`{ total, current, size, records }`
-- 转换逻辑在 `src/utils/api-adapter.ts`
+- Backend: `{ count, pageNo, pageSize, lists }`
+- Frontend: `{ total, current, size, records }`
+- Mapping in `src/utils/api-adapter.ts`
 
 ---
 
-## 🔧 配置说明
+## 🔧 Configuration
 
-### 环境变量
+### Environment variables
 
-**开发环境** (`.env.development`)：
+**Development** (`.env.development`):
 
 ```env
 VITE_API_URL=
@@ -85,18 +87,18 @@ VITE_API_PROXY_URL=http://localhost:8080
 VITE_PORT=5173
 ```
 
-**生产环境** (`.env.production`)：
+**Production** (`.env.production`):
 
 ```env
 VITE_API_URL=https://your-api-id.execute-api.region.amazonaws.com/prod
 ```
 
-### Vite 代理配置
+### Vite proxy
 
-前端通过 Vite 代理访问后端，避免 CORS 问题：
+Vite proxy is configured to avoid CORS issues:
 
 ```typescript
-// vite.config.ts 已配置代理
+// vite.config.ts proxy configuration
 proxy: {
   '/api/auth': { target: 'http://localhost:8081', changeOrigin: true },
   '/users': { target: VITE_API_PROXY_URL, changeOrigin: true },
@@ -107,77 +109,77 @@ proxy: {
 
 ---
 
-## 📝 注意事项
+## 📝 Notes
 
-### 1. 响应格式兼容
+### 1. Response format compatibility
 
-后端有两种响应格式：
+The backend has two response formats:
 
 - `base-service`: `{ code, msg, data }` ✅
 - `auth-service`: `{ code, message, data }` ⚠️
 
-HTTP 拦截器已兼容两种格式。
+The HTTP interceptor supports both formats.
 
-### 2. 字段映射
+### 2. Field mapping
 
-前端期望的字段和后端返回的字段不完全一致，已通过适配器转换：
+The frontend fields differ from backend responses and are adapted via:
 
-- `src/utils/api-adapter.ts` - 字段转换工具
+- `src/utils/api-adapter.ts` - field mapping
 
-### 3. 分页参数
+### 3. Pagination parameters
 
-- 前端发送：`{ current: 1, size: 20 }`
-- 后端期望：`{ pageNum: 1, pageSize: 20 }`
-- 已在 API 调用中自动转换
-
----
-
-## 🐛 常见问题
-
-### 1. CORS 错误
-
-**问题**：前端无法访问后端 API
-
-**解决**：
-
-- 确保使用 Vite 代理（已配置）
-- 或后端配置 CORS（推荐）
-
-### 2. 404 错误
-
-**问题**：接口路径不匹配
-
-**检查**：
-
-- 后端接口路径是否正确
-- 前端 API 调用路径是否正确
-- 查看 `src/api/system-manage.ts` 和 `src/api/auth.ts`
-
-### 3. 字段不匹配
-
-**问题**：前端显示的数据不正确
-
-**解决**：
-
-- 检查 `src/utils/api-adapter.ts` 中的字段映射
-- 根据实际后端返回调整映射逻辑
+- Frontend sends: `{ current: 1, size: 20 }`
+- Backend expects: `{ pageNum: 1, pageSize: 20 }`
+- Mapping is done in API calls
 
 ---
 
-## 📚 相关文件
+## 🐛 Common Issues
 
-- `src/api/system-manage.ts` - 系统管理 API（用户、部门）
-- `src/api/auth.ts` - 认证 API（登录）
-- `src/utils/api-adapter.ts` - API 适配器（字段转换）
-- `src/utils/http/index.ts` - HTTP 请求封装
-- `.env.development` - 开发环境配置
+### 1. CORS error
+
+**Problem**: Frontend cannot access backend APIs
+
+**Fix**:
+
+- Ensure Vite proxy is enabled (recommended)
+- Or configure CORS in backend
+
+### 2. 404 error
+
+**Problem**: API path mismatch
+
+**Check**:
+
+- Backend endpoint paths
+- Frontend API paths
+- Files: `src/api/system-manage.ts`, `src/api/auth.ts`
+
+### 3. Field mismatch
+
+**Problem**: Frontend data looks incorrect
+
+**Fix**:
+
+- Check mappings in `src/utils/api-adapter.ts`
+- Adjust mapping based on actual backend response
 
 ---
 
-## 🎯 下一步
+## 📚 Related Files
 
-1. ✅ 启动后端服务
-2. ✅ 启动前端服务
-3. ✅ 测试登录功能
-4. ✅ 测试用户列表
-5. ✅ 测试部门列表
+- `src/api/system-manage.ts` - system management APIs (users, departments)
+- `src/api/auth.ts` - auth APIs (login)
+- `src/utils/api-adapter.ts` - API adapter (field mapping)
+- `src/utils/http/index.ts` - HTTP request wrapper
+- `.env.development` - development config
+
+---
+
+## 🎯 Next Steps
+
+1. ✅ Start backend services
+2. ✅ Start frontend
+3. ✅ Test login
+4. ✅ Test user list
+5. ✅ Test department list
